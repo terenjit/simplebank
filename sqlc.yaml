@@ -7,12 +7,18 @@ sql:
     go: 
       package: "db"
       out: "db/sqlc"
-      sql_package: "pgx/v5"
+      sql_package: "database/sql"
       emit_json_tags: true
-      emit_interface: false
+      emit_interface: true
       emit_empty_slices: true
       overrides:
         - db_type: "timestamptz"
           go_type: "time.Time"
         - db_type: "uuid"
           go_type: "github.com/google/uuid.UUID"
+        - column: "entries.account_id"         # Map account_id to int64
+          go_type: "int64"
+        - column: "transfers.from_account_id"    # Map from_account_id to int64
+          go_type: "int64"
+        - column: "transfers.to_account_id"      # Map to_account_id to int64
+          go_type: "int64"
