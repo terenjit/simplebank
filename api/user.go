@@ -22,6 +22,7 @@ type createUserRequest struct {
 type CreateUserResponse struct {
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
+	HashedPassword    string    `json:"hashed_password"`
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
@@ -63,6 +64,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 	rsp := CreateUserResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
+		HashedPassword:    user.HashedPassword,
 		Email:             user.Email,
 		PasswordChangedAt: user.PasswordChangedAt,
 		CreatedAt:         user.CreatedAt,
@@ -72,7 +74,16 @@ func (server *Server) createUser(ctx *gin.Context) {
 }
 
 type getUserRequest struct {
-	Username string `uri:"username" binding:"required"`
+	Username string `uri:"username" binding:"required,alphanum"`
+}
+
+type GetUserResponse struct {
+	Username          string    `json:"username"`
+	FullName          string    `json:"full_name"`
+	HashedPassword    string    `json:"hashed_password"`
+	Email             string    `json:"email"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 func (server *Server) getUser(ctx *gin.Context) {
@@ -94,9 +105,10 @@ func (server *Server) getUser(ctx *gin.Context) {
 		return
 	}
 
-	rsp := CreateUserResponse{
+	rsp := GetUserResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
+		HashedPassword:    user.HashedPassword,
 		Email:             user.Email,
 		PasswordChangedAt: user.PasswordChangedAt,
 		CreatedAt:         user.CreatedAt,
