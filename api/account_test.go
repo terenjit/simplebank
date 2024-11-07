@@ -22,6 +22,7 @@ import (
 func TestGetAccountAPI(t *testing.T) {
 	user := randomUser()
 	account := randomAccount(user.Username)
+	fmt.Println("testing")
 
 	testCases := []struct {
 		name          string
