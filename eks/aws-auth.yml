@@ -10,12 +10,12 @@ data:
       groups:
         - eks-console-dashboard-full-access-group
         - system:masters
-  mapUsers: |
-    - userarn: arn:aws:iam::582081400281:user/simplebank-dev
-      username: simplebank-dev
-      groups:
-        - system:masters
-    - userarn: arn:aws:iam::582081400281:root
-      username: root
-      groups:
-        - system:masters
+  # mapUsers: |
+  #   - userarn: arn:aws:iam::582081400281:user/simplebank-dev
+  #     username: simplebank-dev
+  #     groups:
+  #       - system:masters
+  #   - userarn: arn:aws:iam::582081400281:root
+  #     username: root
+  #     groups:
+  #       - system:masters
