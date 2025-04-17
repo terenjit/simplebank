@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -25,6 +26,6 @@ func NewTestServer(t *testing.T, store db.Store) *Server {
 
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
-
+	fmt.Println("test")
 	os.Exit(m.Run())
 }
