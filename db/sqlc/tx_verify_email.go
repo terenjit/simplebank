@@ -1,0 +1,53 @@
+package db
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+
+	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+type VerifyEmailTxParams struct {
+	EmailId    int64
+	SecretCode string
+}
+
+type VerifyEmailTxResult struct {
+	User        User
+	VerifyEmail VerifyEmail
+}
+
+func (store *SQLStore) VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error) {
+	var result VerifyEmailTxResult
+
+	err := store.execTx(ctx, func(q *Queries) error {
+		var err error
+
+		result.VerifyEmail, err = q.UpdateVerifyEmail(ctx, UpdateVerifyEmailParams{
+			ID:         arg.EmailId,
+			SecretCode: arg.SecretCode,
+		})
+		if err != nil {
+			log.Error().Err(err).Int64("email_id", arg.EmailId).Str("secret_code", arg.SecretCode).Msg("UpdateVerifyEmail failed")
+			if errors.Is(err, sql.ErrNoRows) {
+				return status.Errorf(codes.NotFound, "verification record not found or already verified")
+			}
+			return err
+		}
+
+		result.User, err = q.UpdateUser(ctx, UpdateUserParams{
+			Username: result.VerifyEmail.Username,
+			IsEmailVerified: sql.NullBool{
+				Bool:  true,
+				Valid: true,
+			},
+		})
+
+		return err
+	})
+
+	return result, err
+}
